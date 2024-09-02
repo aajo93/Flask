@@ -30,11 +30,11 @@ services:
         # waiting for the database to be ready
         condition: service_healthy
     environment:
-      RDS_USERNAME: ${POSTGRES_USER}
-      RDS_PASSWORD: ${POSTGRES_PASSWORD}
-      RDS_HOSTNAME: psql-db
-      RDS_PORT: 5432
-      RDS_DB_NAME: ${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOSTNAME: psql-db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
     volumes:
       #- ./flask/app:/app/app
       - ./app:/app/app

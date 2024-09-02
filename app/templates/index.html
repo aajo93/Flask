@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Hi, {{ current_user.username }}!</h1>
+    {% if form %}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.actual_url.label }}<br>
+            {{ form.actual_url(cols=32, rows=4) }}<br>
+            {% for error in form.actual_url.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description(cols=32, rows=4) }}<br>
+            {% for error in form.description.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    {% endif %}
+    <table class="table table-hover">
+    {% for url in urls %}
+    <tr>
+    <th><a href={{url.actual_url}}>{{ base_url  }}{{ url.short_url }}</a></th>
+    <th>{{ url.actual_url }}</th>
+    <th>{{ url.description }}</th>
+    {% if url.username %}
+    <th>{{ url.username }}</th>
+    {% endif %}
+    </tr>
+    {% endfor %}
+    </table>
+    {% if prev_url %}
+    <a href="{{ prev_url }}"><button type="button" class="btn btn-light">Previous</button></a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}"><button type="button" class="btn btn-light">Next</button></a>
+    {% endif %}
+</div>
+{% endblock %}

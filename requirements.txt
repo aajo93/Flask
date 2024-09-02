@@ -2,6 +2,7 @@ blinker==1.7.0
 click==8.1.7
 Flask==3.0.0
 Flask-SQLAlchemy==3.1.1
+
 greenlet==3.0.2
 importlib-metadata==7.0.0
 itsdangerous==2.1.2
@@ -12,3 +13,10 @@ SQLAlchemy==2.0.23
 typing_extensions==4.9.0
 Werkzeug==3.0.1
 zipp==3.17.0
+Flask-WTF==1.2.1
+WTForms==3.1.1
+
+Flask-HTTPAuth==4.8.0
+Flask-Login==0.6.3
+Flask-Mail==0.9.1
+email-validator==2.1.0.post1
