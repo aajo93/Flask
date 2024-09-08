@@ -33,7 +33,7 @@ def index():
     prev_url = url_for('main.index',page=urls.prev_num) if urls.prev_num else None
 
     base_url = request.base_url
-    return render_template('index.html', title='Home', urls=urls, form=form, base_url=base_url,next_url=next_url,prev_url=prev_url)
+    return render_template('index.html', title='Home', urls=urls, form=form, base_url=base_url,next_url=next_url,prev_url=prev_url,curr_page='index')
 
 @main_bp.route('/all')
 @login_required
@@ -53,8 +53,21 @@ def all():
     prev_url = url_for('main.all',page=urls.prev_num) if urls.prev_num else None
 
     base_url = request.base_url
-    return render_template('index.html', title='All', urls=urls, base_url=base_url,next_url=next_url,prev_url=prev_url)
+    return render_template('index.html', title='All', urls=urls, base_url=base_url,next_url=next_url,prev_url=prev_url,curr_page='all')
 
+@main_bp.route('/shorturl/<id>', methods=["POST"])
+@login_required
+def shorturl_delete(id):
+    curr_user_id = current_user.id
+
+    short_url = ShortURL.query.get(id)
+    if short_url is None or curr_user_id != short_url.user_id:
+        flash('Failed to delete the URL. You may not have permission or the URL does not exist.', 'warning')
+        return redirect(url_for('main.index'))
+
+    db.session.delete(short_url)
+    db.session.commit()
+    return redirect(url_for('main.index'))
 
 @main_bp.route('/<short_key>',methods=['GET'])
 def redirect_to_url(short_key):
