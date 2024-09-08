@@ -14,13 +14,23 @@ def create_app():
 
     #app = Flask(__name__)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{password}@{host}:{port}/{database}'.format(
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{password}@{host}:{port}/{database}'.format(
+    #    username=os.environ['DB_USERNAME'],
+    #    password=os.environ['DB_PASSWORD'],
+    #    host=os.environ['DB_HOSTNAME'],
+    #    port=os.environ['DB_PORT'],
+    #    database=os.environ['DB_NAME'],
+    #)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{username}:{password}@{host}:{port}/{database}'.format(
         username=os.environ['DB_USERNAME'],
         password=os.environ['DB_PASSWORD'],
         host=os.environ['DB_HOSTNAME'],
         port=os.environ['DB_PORT'],
         database=os.environ['DB_NAME'],
     )
+
+
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     app.config['POSTS_PER_PAGE'] = 2

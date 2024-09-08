@@ -1,20 +1,39 @@
 # define the two containers
 services:
-  psql-db:
-    # pull the postgres image from DockerHub
-    image: postgres:15.2
-    container_name: psql-db
+ #psql-db:
+ #   # pull the postgres image from DockerHub
+ #   image: postgres:15.2
+ #   container_name: psql-db
+ #   environment:
+ #     POSTGRES_USER: ${POSTGRES_USER}
+ #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+ #     POSTGRES_DB: ${POSTGRES_DB}
+ #   ports:
+ #     - "5432:5432"
+ #   volumes:
+ #     - db-volume:/var/lib/postgresql/data
+ #   healthcheck:
+ #     # used in flask container depends_on condition to wait for the DB to be ready
+ #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+ #     interval: 5s
+ #     timeout: 20s
+ #     retries: 5
+  mariadb:
+    # Pull the MariaDB image from DockerHub
+    image: mariadb:10.11
+    container_name: mariadb
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Root password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}  # Optional: Default database to create
+      MYSQL_USER: ${MYSQL_USER}  # Optional: Non-root user
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}  # Optional: Password for non-root user
     ports:
-      - "5432:5432"
+      - "3306:3306"  # MariaDB default port
     volumes:
-      - db-volume:/var/lib/postgresql/data
+      - mariadb-volume:/var/lib/mysql  # Volume to persist database data (if needed)
     healthcheck:
-      # used in flask container depends_on condition to wait for the DB to be ready
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      # Used in Flask container depends_on condition to wait for the DB to be ready
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD} --silent"]
       interval: 5s
       timeout: 20s
       retries: 5
@@ -26,18 +45,25 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      psql-db:
+    # psql-db:
+
+      mariadb:
         # waiting for the database to be ready
         condition: service_healthy
     environment:
-      DB_USERNAME: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_HOSTNAME: psql-db
-      DB_PORT: 5432
-      DB_NAME: ${POSTGRES_DB}
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_HOSTNAME: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE}
+      #DB_USERNAME: ${POSTGRES_USER}
+      #DB_PASSWORD: ${POSTGRES_PASSWORD}
+      #DB_HOSTNAME: psql-db
+      #DB_PORT: 5432
+      #DB_NAME: ${POSTGRES_DB}
     volumes:
       #- ./flask/app:/app/app
       - ./app:/app/app
 volumes:
   # to persist the database tables
-  db-volume:
+  mariadb-volume:
