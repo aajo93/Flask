@@ -82,6 +82,11 @@ def redirect_to_url(short_key):
 def test():
     return 'test good', 200
 
+@main_bp.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+
 @main_bp.route('/login', methods=['GET','POST'])
 def login():
     #already logged in
